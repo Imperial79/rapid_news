@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import '../Models/Response_Model.dart';
 
-const String baseUrl = "http://192.168.0.158:5555";
+const String baseUrl = "http://baseurlhere";
 
 Future<ResponseModel> apiCallBack({
   String method = 'POST',
