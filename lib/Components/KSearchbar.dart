@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rapid_news/Resources/colors.dart';
-import 'kTextfield.dart';
 
 class KSearchbar extends StatefulWidget {
   final TextEditingController controller;

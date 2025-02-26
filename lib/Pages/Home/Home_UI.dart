@@ -54,11 +54,10 @@ class _Home_UIState extends State<Home_UI> {
       body: DefaultTabController(
         length: kCategoryList.length,
         child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
                   padding: EdgeInsets.all(kPadding),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +68,9 @@ class _Home_UIState extends State<Home_UI> {
                     ],
                   ),
                 ),
-                ValueListenableBuilder(
+              ),
+              SliverToBoxAdapter(
+                child: ValueListenableBuilder(
                   valueListenable: activeCarousel,
                   builder: (context, value, child) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +137,12 @@ class _Home_UIState extends State<Home_UI> {
                     ],
                   ),
                 ),
-                TabBar(
+              ),
+              SliverAppBar(
+                surfaceTintColor: Kolor.scaffold,
+                pinned: true,
+                backgroundColor: Colors.white,
+                flexibleSpace: TabBar(
                   onTap: (value) {
                     log(kCategoryList[value]);
                   },
@@ -160,11 +166,17 @@ class _Home_UIState extends State<Home_UI> {
                     ),
                   ],
                 ),
-                Container(
-                    // content view
-                    )
-              ],
-            ),
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                    child: Column(
+                  children: List.generate(
+                    200,
+                    (index) => Label("text").regular,
+                  ),
+                )),
+              ),
+            ],
           ),
         ),
       ),
