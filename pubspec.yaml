@@ -46,6 +46,7 @@ dependencies:
   flutter_carousel_widget: ^3.1.0
   cached_network_image: ^3.4.1
   skeletonizer: ^1.4.3
+  animations: ^2.0.11
 
 dev_dependencies:
   flutter_test:
@@ -72,34 +73,12 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/icons/navigation/
 
   fonts:
-    - family: Cormorant
+    - family: RobotoSlab
       fonts:
-        - asset: assets/fonts/CormorantInfant-Regular.ttf
-        - asset: assets/fonts/CormorantInfant-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/CormorantInfant-BoldItalic.ttf
-          weight: 700
-        - asset: assets/fonts/CormorantInfant-Italic.ttf
-          style: italic
-        - asset: assets/fonts/CormorantInfant-Light.ttf
-          weight: 300
-        - asset: assets/fonts/CormorantInfant-LightItalic.ttf
-          weight: 300
-          style: italic
-        - asset: assets/fonts/CormorantInfant-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/CormorantInfant-MediumItalic.ttf
-          weight: 500
-          style: italic
-        - asset: assets/fonts/CormorantInfant-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/CormorantInfant-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/CormorantInfant-SemiBoldItalic.ttf
-          weight: 600
-          style: italic
+        - asset: assets/fonts/RobotoSlab-VariableFont_wght.ttf
 
   #   - family: Trajan Pro
   #     fonts:

@@ -1,4 +1,5 @@
-const express = require("express");
+import express from "express";
+import newsApi from "./api-routes/news/index.js";
 
 const app = express();
 
@@ -8,6 +9,8 @@ app.get("/", (req, res) => {
 		error: false,
 	});
 });
+
+app.use("/news", newsApi);
 
 const PORT = 5555;
 

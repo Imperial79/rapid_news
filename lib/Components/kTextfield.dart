@@ -253,14 +253,12 @@ class KTextfield {
                     color: Kolor.primary,
                     borderRadius: kRadius(10),
                   ),
-                  child: Text(
+                  child: Label(
                     prefixText!,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 11,
-                        color: Colors.white),
+                    fontSize: 11,
+                    color: Colors.white,
                     textAlign: TextAlign.center,
-                  ),
+                  ).regular,
                 )
               else if (prefixText == null && prefix != null)
                 Container(

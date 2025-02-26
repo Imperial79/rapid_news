@@ -1,10 +1,9 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'dart:developer';
 
 import '../Models/Response_Model.dart';
 
-const String baseUrl = "https://customer-api.ngforganic.com";
+const String baseUrl = "http://192.168.0.158:5555";
 
 Future<ResponseModel> apiCallBack({
   String method = 'POST',

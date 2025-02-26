@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:rapid_news/Components/KNavigationBar.dart';
 import 'package:rapid_news/Resources/app_config.dart';
 import 'package:rapid_news/Resources/constants.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';

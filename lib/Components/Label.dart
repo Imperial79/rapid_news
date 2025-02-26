@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rapid_news/Resources/theme.dart';
-
 import '../Resources/colors.dart';
 import '../Resources/commons.dart';
+import '../Resources/theme.dart';
 
 class Label {
   final String text;

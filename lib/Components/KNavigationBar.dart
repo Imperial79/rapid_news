@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rapid_news/Components/Label.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:rapid_news/Components/kCard.dart';
 import 'package:rapid_news/Resources/colors.dart';
 import 'package:rapid_news/Resources/constants.dart';
 
@@ -14,11 +12,19 @@ class KNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return KCard(
+    return Container(
       padding: EdgeInsets.all(10),
-      borderWidth: 1,
-      color: Kolor.scaffold,
-      radius: 0,
+      decoration: BoxDecoration(
+        color: Kolor.scaffold,
+        boxShadow: [
+          BoxShadow(
+            color: Kolor.border.lighten(),
+            offset: Offset(0, 5),
+            blurRadius: 20,
+            spreadRadius: 10,
+          ),
+        ],
+      ),
       child: SafeArea(
         child: Row(
           children: navList
@@ -56,18 +62,22 @@ class KNavigationBar extends StatelessWidget {
                   selected
                       ? "$navIconPath/$iconPath-filled.svg"
                       : "$navIconPath/$iconPath.svg",
-                  height: 20,
+                  height: 17,
                   colorFilter: ColorFilter.mode(
                     selected ? Kolor.primary : Kolor.fadeText,
                     BlendMode.srcIn,
                   ),
                 ),
-                Label(
+                Text(
                   label,
-                  weight: selected ? 700 : 600,
-                  color: selected ? null : Kolor.fadeText,
-                  fontSize: 13,
-                ).regular,
+                  style: TextStyle(
+                    fontFamily: "",
+                    fontVariations: [
+                      FontVariation.weight(selected ? 700 : 600)
+                    ],
+                    color: selected ? null : Kolor.fadeText,
+                  ),
+                ),
               ],
             ),
           );

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rapid_news/Pages/Root_UI.dart';
 
 final goRouterProvider = Provider<GoRouter>(
   (ref) {
@@ -13,7 +14,12 @@ final goRouterProvider = Provider<GoRouter>(
         // },
         // redirectLimit: 1,
         initialLocation: '/',
-        routes: []
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => const Root_UI(),
+          ),
+        ]
         // errorBuilder: (context, state) => Path_Error_UI(),
         // routes: [
         //   GoRoute(
@@ -57,10 +63,7 @@ final goRouterProvider = Provider<GoRouter>(
         //       ),
         //     ],
         //   ),
-        //   GoRoute(
-        //     path: '/',
-        //     builder: (context, state) => const Root_UI(),
-        //   ),
+
         //   GoRoute(
         //     path: '/product/:name/:id',
         //     builder: (context, state) {

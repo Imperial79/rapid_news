@@ -11,6 +11,7 @@ class KCarousel extends StatefulWidget {
   final bool isLooped;
   final double indicatorSpace;
   final bool showIndicator;
+  final FlutterCarouselController? controller;
 
   const KCarousel({
     super.key,
@@ -20,6 +21,7 @@ class KCarousel extends StatefulWidget {
     this.indicatorSpace = 0,
     this.images = const [],
     this.showIndicator = true,
+    this.controller,
   });
 
   static Widget item({
@@ -72,12 +74,14 @@ class _KCarouselState extends State<KCarousel> {
       children: [
         FlutterCarousel(
           options: FlutterCarouselOptions(
+            controller: widget.controller,
             height: widget.height ?? 200.0,
-            viewportFraction: 1,
+            viewportFraction: .85,
             pageSnapping: true,
             showIndicator: false,
             floatingIndicator: true,
-            enableInfiniteScroll: true,
+            padEnds: false,
+            enableInfiniteScroll: widget.isLooped,
             autoPlay: widget.isLooped,
             onPageChanged: (index, reason) {
               setState(() {
@@ -100,10 +104,9 @@ class _KCarouselState extends State<KCarousel> {
                   .toList()
               : widget.children,
         ),
-        if ((widget.showIndicator &&
-                widget.images.length > 1 &&
-                widget.children.isEmpty) ||
-            widget.children.isNotEmpty)
+        if (widget.showIndicator &&
+            ((widget.images.length > 1 && widget.children.isEmpty) ||
+                widget.children.isNotEmpty))
           _indicator(
             activeIndex: activePage,
             length: widget.images.isNotEmpty

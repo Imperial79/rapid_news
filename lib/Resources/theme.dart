@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rapid_news/Resources/colors.dart';
 
-const String kFont = "Montserrat";
+const String kFont = "RobotoSlab";
 
 ThemeData kTheme(BuildContext context) => ThemeData(
       useMaterial3: true,
