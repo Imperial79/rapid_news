@@ -45,5 +45,4 @@ app.*.map.json
 /android/app/release
 
 
-lib/Secret/
-lib/Backend/Secret/
+Backend/Secret/api-key.js

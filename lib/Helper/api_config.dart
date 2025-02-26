@@ -24,45 +24,16 @@ Future<ResponseModel> apiCallBack({
     // );
     // dio.interceptors.add(CookieManager(jar));
 
-    final formData = FormData.fromMap(body);
+    // final formData = FormData.fromMap(body);
 
     if (method == 'POST') {
       response = await dio.post(
         baseUrl + path,
-        data: formData,
+        data: body,
       );
     } else {
       response = await dio.get(baseUrl + path);
     }
-    log("$path - ${response.data["message"]}");
-    return ResponseModel.fromMap(response.data);
-  } catch (e) {
-    rethrow;
-  }
-}
-
-Future<ResponseModel> apiCallBackMedia({
-  required String path,
-  required Map<String, dynamic> body,
-}) async {
-  try {
-    final dio = Dio();
-    Response response;
-
-    // final Directory appDocDir = await getApplicationDocumentsDirectory();
-    // final String appDocPath = appDocDir.path;
-    // final jar = PersistCookieJar(
-    //   ignoreExpires: true,
-    //   storage: FileStorage("$appDocPath/.cookies/"),
-    // );
-    // dio.interceptors.add(CookieManager(jar));
-
-    final formData = FormData.fromMap(body);
-
-    response = await dio.post(
-      baseUrl + path,
-      data: formData,
-    );
     log("$path - ${response.data["message"]}");
     return ResponseModel.fromMap(response.data);
   } catch (e) {

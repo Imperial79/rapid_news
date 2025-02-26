@@ -23,44 +23,18 @@ class KSearchbar extends StatefulWidget {
 class _KSearchbarState extends State<KSearchbar> {
   @override
   Widget build(BuildContext context) {
-    // return KTextfield(
-    //   controller: widget.controller,
-    //   fontSize: 15,
-    //   fieldColor: Kolor.scaffold,
-    //   prefix: const Icon(
-    //     Icons.search,
-    //     size: 25,
-    //   ),
-    //   hintText: widget.hintText,
-    //   suffix: widget.controller.text.isNotEmpty
-    //       ? IconButton(
-    //           onPressed: () {
-    //             widget.controller.clear();
-    //             widget.onClear?.call();
-    //             setState(() {});
-    //           },
-    //           icon: const Icon(
-    //             Icons.close,
-    //             size: 22,
-    //           ),
-    //           visualDensity: VisualDensity.compact,
-    //         )
-    //       : SizedBox(),
-    //   onChanged: (_) => setState(() {}),
-    //   onFieldSubmitted: widget.onFieldSubmitted,
-    // ).regular;
-
     return SearchBar(
       controller: widget.controller,
       elevation: WidgetStatePropertyAll(0),
       backgroundColor: WidgetStatePropertyAll(Kolor.scaffold),
-      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 15)),
+      padding: WidgetStatePropertyAll(
+          EdgeInsets.symmetric(horizontal: 15).copyWith(right: 5)),
       hintText: "Search",
       hintStyle: WidgetStatePropertyAll(
         TextStyle(
           fontSize: 17,
           fontVariations: [FontVariation.weight(400)],
-          color: Kolor.fadeText,
+          color: Kolor.border,
         ),
       ),
       textStyle: WidgetStatePropertyAll(
@@ -74,6 +48,11 @@ class _KSearchbarState extends State<KSearchbar> {
         size: 30,
       ),
       side: WidgetStatePropertyAll(BorderSide(color: Kolor.border)),
+      trailing: [
+        IconButton.filledTonal(
+            onPressed: () => widget.onFieldSubmitted!(widget.controller.text),
+            icon: Icon(Icons.arrow_forward))
+      ],
     );
   }
 }
