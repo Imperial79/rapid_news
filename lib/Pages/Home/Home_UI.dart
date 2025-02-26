@@ -10,7 +10,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rapid_news/Components/KNavigationBar.dart';
 import 'package:rapid_news/Components/KScaffold.dart';
-import 'package:rapid_news/Components/KSearchbar.dart';
 import 'package:rapid_news/Components/Label.dart';
 import 'package:rapid_news/Components/kCard.dart';
 import 'package:rapid_news/Components/kWidgets.dart';
@@ -46,7 +45,7 @@ class _Home_UIState extends ConsumerState<Home_UI> {
     pageNo.value = 0;
     ref.refresh(trendingNewsFuture.future);
     ref.refresh(allNewsFuture(jsonEncode({
-      "category": category,
+      "category": category == "all" ? "general" : category,
       "pageNo": pageNo.value,
     })).future);
   }
@@ -63,6 +62,8 @@ class _Home_UIState extends ConsumerState<Home_UI> {
     return RefreshIndicator(
       onRefresh: _refresh,
       child: KScaffold(
+        isLoading: ValueNotifier(
+            allNewsAsync.isRefreshing || trendingList.isRefreshing),
         body: DefaultTabController(
           length: kCategoryList.length,
           child: SafeArea(
@@ -106,142 +107,169 @@ class _Home_UIState extends ConsumerState<Home_UI> {
                     ),
                   ),
                 ),
-                SliverToBoxAdapter(
-                  child: ValueListenableBuilder(
-                    valueListenable: activeCarousel,
-                    builder: (context, value, child) => Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: kPadding),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                  child:
-                                      Label("Trending Now", weight: 500).title),
-                              IconButton(
-                                onPressed: () {
-                                  if (carouselController != null && value > 0) {
-                                    carouselController!
-                                        .animateToPage(value - 1);
-                                  }
-                                },
-                                visualDensity: VisualDensity.compact,
-                                icon: RotatedBox(
-                                  quarterTurns: 2,
-                                  child: SvgPicture.asset(
+                if (trendingList.isLoading ||
+                    (trendingList.hasValue && trendingList.value != null)) ...[
+                  SliverToBoxAdapter(
+                    child: ValueListenableBuilder(
+                      valueListenable: activeCarousel,
+                      builder: (context, value, child) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: kPadding),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    child: Label("Trending Now", weight: 500)
+                                        .title),
+                                IconButton(
+                                  onPressed: () {
+                                    if (carouselController != null &&
+                                        value > 0) {
+                                      carouselController!
+                                          .animateToPage(value - 1);
+                                    }
+                                  },
+                                  visualDensity: VisualDensity.compact,
+                                  icon: RotatedBox(
+                                    quarterTurns: 2,
+                                    child: SvgPicture.asset(
+                                      "$kIconPath/next.svg",
+                                      height: 20,
+                                      colorFilter: kSvgColor(value == 0
+                                          ? Kolor.border
+                                          : Kolor.text),
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    if (carouselController != null) {
+                                      carouselController!
+                                          .animateToPage(value + 1);
+                                    }
+                                  },
+                                  visualDensity: VisualDensity.compact,
+                                  icon: SvgPicture.asset(
                                     "$kIconPath/next.svg",
                                     height: 20,
                                     colorFilter: kSvgColor(
-                                        value == 0 ? Kolor.border : Kolor.text),
+                                        value == 4 ? Kolor.border : Kolor.text),
                                   ),
                                 ),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  if (carouselController != null) {
-                                    carouselController!
-                                        .animateToPage(value + 1);
-                                  }
-                                },
-                                visualDensity: VisualDensity.compact,
-                                icon: SvgPicture.asset(
-                                  "$kIconPath/next.svg",
-                                  height: 20,
-                                  colorFilter: kSvgColor(
-                                      value == 4 ? Kolor.border : Kolor.text),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        FlutterCarousel(
-                          items: trendingList.when(
-                              data: (data) {
-                                if (data != null) {
-                                  return List.generate(
-                                    data["articles"].length > 5
-                                        ? 5
-                                        : data["articles"].length,
-                                    (index) =>
-                                        trendingCard(data["articles"][index]),
-                                  );
-                                }
-                                return [];
+                          FlutterCarousel(
+                            items: trendingList.when(
+                                data: (data) {
+                                  if (data != null) {
+                                    return List.generate(
+                                      data["articles"].length > 5
+                                          ? 5
+                                          : data["articles"].length,
+                                      (index) =>
+                                          trendingCard(data["articles"][index]),
+                                    );
+                                  }
+                                  return [];
+                                },
+                                error: (error, stackTrace) => [SizedBox()],
+                                loading: () => loadingTrendingCard()),
+                            options: FlutterCarouselOptions(
+                              controller: carouselController,
+                              height: 450,
+                              viewportFraction: .85,
+                              pageSnapping: true,
+                              showIndicator: false,
+                              floatingIndicator: true,
+                              padEnds: false,
+                              enableInfiniteScroll: false,
+                              autoPlay: false,
+                              onPageChanged: (index, reason) {
+                                activeCarousel.value = index;
                               },
-                              error: (error, stackTrace) => [SizedBox()],
-                              loading: () => loadingTrendingCard()),
-                          options: FlutterCarouselOptions(
-                            controller: carouselController,
-                            height: 450,
-                            viewportFraction: .85,
-                            pageSnapping: true,
-                            showIndicator: false,
-                            floatingIndicator: true,
-                            padEnds: false,
-                            enableInfiniteScroll: false,
-                            autoPlay: false,
-                            onPageChanged: (index, reason) {
-                              activeCarousel.value = index;
-                            },
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverAppBar(
+                    surfaceTintColor: Kolor.scaffold,
+                    pinned: true,
+                    backgroundColor: Colors.white,
+                    flexibleSpace: TabBar(
+                      onTap: (value) {
+                        setState(() {
+                          category = kCategoryList[value];
+                        });
+                      },
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      tabAlignment: TabAlignment.start,
+                      isScrollable: true,
+                      indicatorColor: Colors.black,
+                      labelColor: Colors.black,
+                      labelStyle: TextStyle(
+                          fontSize: 20,
+                          fontFamily: kFont,
+                          fontVariations: [FontVariation.weight(600)]),
+                      unselectedLabelStyle: TextStyle(
+                          fontSize: 20,
+                          color: Kolor.fadeText,
+                          fontVariations: [FontVariation.weight(400)],
+                          fontFamily: kFont),
+                      tabs: [
+                        ...kCategoryList.map(
+                          (e) => Tab(
+                            text: e,
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-                SliverAppBar(
-                  surfaceTintColor: Kolor.scaffold,
-                  pinned: true,
-                  backgroundColor: Colors.white,
-                  flexibleSpace: TabBar(
-                    onTap: (value) {
-                      setState(() {
-                        category = kCategoryList[value];
-                      });
-                    },
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    tabAlignment: TabAlignment.start,
-                    isScrollable: true,
-                    indicatorColor: Colors.black,
-                    labelColor: Colors.black,
-                    labelStyle: TextStyle(
-                        fontSize: 20,
-                        fontFamily: kFont,
-                        fontVariations: [FontVariation.weight(600)]),
-                    unselectedLabelStyle: TextStyle(
-                        fontSize: 20,
-                        color: Kolor.fadeText,
-                        fontVariations: [FontVariation.weight(400)],
-                        fontFamily: kFont),
-                    tabs: [
-                      ...kCategoryList.map(
-                        (e) => Tab(
-                          text: e,
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.all(kPadding),
+                      child: allNewsAsync.isLoading
+                          ? loadingNewsCard()
+                          : ListView.separated(
+                              separatorBuilder: (context, index) => Divider(
+                                height: 50,
+                                color: Kolor.border.lighten(.6),
+                              ),
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: allNewsList.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) =>
+                                  newsTile(allNewsList[index]),
+                            ),
+                    ),
+                  ),
+                ] else
+                  SliverToBoxAdapter(
+                    child: kNoData(
+                      context,
+                      action: TextButton(
+                        onPressed: () {
+                          _refresh();
+                        },
+                        child: Row(
+                          spacing: 5,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.refresh,
+                              size: 15,
+                              color: Kolor.primary,
+                            ),
+                            Label("Retry").regular,
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.all(kPadding),
-                    child: allNewsAsync.isLoading
-                        ? loadingNewsCard()
-                        : ListView.separated(
-                            separatorBuilder: (context, index) => Divider(
-                              height: 50,
-                              color: Kolor.border.lighten(.6),
-                            ),
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: allNewsList.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) =>
-                                newsTile(allNewsList[index]),
-                          ),
-                  ),
-                ),
+                    ),
+                  )
               ],
             ),
           ),
@@ -367,9 +395,79 @@ class _Home_UIState extends ConsumerState<Home_UI> {
                   ).regular,
                 ),
                 height10,
+                kUnderline(
+                  child: Row(
+                    spacing: 10,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Label(
+                        "Read Now",
+                        fontSize: constraints.maxHeight * 0.03,
+                      ).regular,
+                      SvgPicture.asset(
+                        "$kIconPath/next.svg",
+                        height: constraints.maxHeight * 0.03,
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            );
+          },
+        ),
+      )),
+    );
+  }
+
+  Widget trendingCard(Map data) {
+    return GestureDetector(
+      onTap: () => context.push("/news", extra: data),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10)
+            .copyWith(right: 0),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: constraints.maxHeight * 0.7,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Kolor.border,
+                    image: DecorationImage(
+                      image: data["urlToImage"] != null
+                          ? NetworkImage(
+                              data["urlToImage"],
+                            )
+                          : AssetImage("$kImagePath/no-image.jpg"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                SizedBox(height: constraints.maxHeight * 0.02),
+                Label(
+                  data["title"],
+                  fontSize: constraints.maxHeight * 0.04,
+                  maxLines: 2,
+                  weight: 500,
+                ).regular,
+                SizedBox(height: constraints.maxHeight * 0.02),
+                Flexible(
+                  child: Label(
+                    "John Doe  •  20 Dec, 2020",
+                    fontSize: constraints.maxHeight * 0.03,
+                    weight: 500,
+                    color: Kolor.fadeText,
+                  ).regular,
+                ),
+                height10,
                 InkWell(
                   onTap: () {},
-                  child: kUnderline(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border(bottom: BorderSide(width: 2))),
                     child: Row(
                       spacing: 10,
                       mainAxisSize: MainAxisSize.min,
@@ -390,76 +488,6 @@ class _Home_UIState extends ConsumerState<Home_UI> {
             );
           },
         ),
-      )),
-    );
-  }
-
-  Widget trendingCard(Map data) {
-    return Container(
-      padding:
-          EdgeInsets.symmetric(horizontal: 20, vertical: 10).copyWith(right: 0),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: constraints.maxHeight * 0.7,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Kolor.border,
-                  image: DecorationImage(
-                    image: data["urlToImage"] != null
-                        ? NetworkImage(
-                            data["urlToImage"],
-                          )
-                        : AssetImage("$kImagePath/no-image.jpg"),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              SizedBox(height: constraints.maxHeight * 0.02),
-              Label(
-                data["title"],
-                fontSize: constraints.maxHeight * 0.04,
-                maxLines: 2,
-                weight: 500,
-              ).regular,
-              SizedBox(height: constraints.maxHeight * 0.02),
-              Flexible(
-                child: Label(
-                  "John Doe  •  20 Dec, 2020",
-                  fontSize: constraints.maxHeight * 0.03,
-                  weight: 500,
-                  color: Kolor.fadeText,
-                ).regular,
-              ),
-              height10,
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(width: 2))),
-                  child: Row(
-                    spacing: 10,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Label(
-                        "Read Now",
-                        fontSize: constraints.maxHeight * 0.03,
-                      ).regular,
-                      SvgPicture.asset(
-                        "$kIconPath/next.svg",
-                        height: constraints.maxHeight * 0.03,
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            ],
-          );
-        },
       ),
     );
   }

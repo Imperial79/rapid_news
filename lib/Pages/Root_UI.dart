@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rapid_news/Components/KNavigationBar.dart';
 import 'package:rapid_news/Pages/Explore/Explore_UI.dart';
+import 'package:rapid_news/Pages/Saved/Saved_UI.dart';
 import 'package:rapid_news/Resources/colors.dart';
 import 'package:rapid_news/Resources/commons.dart';
 import 'package:animations/animations.dart';
@@ -19,15 +20,13 @@ class _Root_UIState extends State<Root_UI> {
   final List<Widget> _screens = [
     const Home_UI(),
     const Explore_UI(),
-    const Home_UI(),
-    const Home_UI(),
+    const Saved_UI(),
   ];
 
   final List _navs = [
     {"label": "Home", "iconPath": "home", "index": 0},
     {"label": "Explore", "iconPath": "explore", "index": 1},
     {"label": "Saved", "iconPath": "bookmark", "index": 2},
-    {"label": "Profile", "iconPath": "profile", "index": 3},
   ];
 
   bool canPop = false;

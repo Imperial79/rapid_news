@@ -28,6 +28,37 @@ class _Explore_UIState extends ConsumerState<Explore_UI> {
   final searchKey = TextEditingController();
   final pageNo = ValueNotifier(1);
   final sortBy = ValueNotifier("relevancy");
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      _loadMoreNews();
+    }
+  }
+
+  void _loadMoreNews() {
+    if (!ref
+        .read(allNewsFuture(jsonEncode({
+          "sortBy": sortBy.value,
+          "searchKey": searchKey.text.trim(),
+          "pageNo": pageNo.value,
+        })))
+        .isRefreshing) {
+      pageNo.value += 1;
+      ref.refresh(allNewsFuture(jsonEncode({
+        "sortBy": sortBy.value,
+        "searchKey": searchKey.text.trim(),
+        "pageNo": pageNo.value,
+      })).future);
+    }
+  }
 
   List<String> sortList = [
     "relevancy",
@@ -48,6 +79,7 @@ class _Explore_UIState extends ConsumerState<Explore_UI> {
   @override
   void dispose() {
     searchKey.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -64,6 +96,7 @@ class _Explore_UIState extends ConsumerState<Explore_UI> {
       child: KScaffold(
         body: SafeArea(
           child: SingleChildScrollView(
+            controller: _scrollController,
             physics: AlwaysScrollableScrollPhysics(),
             padding: EdgeInsets.all(kPadding),
             child: Column(

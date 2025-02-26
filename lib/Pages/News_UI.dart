@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:rapid_news/Components/KScaffold.dart';
 import 'package:rapid_news/Components/Label.dart';
 import 'package:rapid_news/Components/kWidgets.dart';
@@ -19,6 +22,41 @@ class News_UI extends StatefulWidget {
 }
 
 class _News_UIState extends State<News_UI> {
+  addToBookmark() async {
+    try {
+      final hiveBox = Hive.box("hiveBox");
+      await hiveBox.add(widget.newsData);
+      KSnackbar(context, message: "Added to bookmark");
+    } catch (e) {
+      KSnackbar(context, message: "$e", error: true);
+    }
+  }
+
+  bool isBookmarked() {
+    final hiveBox = Hive.box("hiveBox");
+    final bookmarkedNews =
+        hiveBox.values.where((news) => news["url"] == widget.newsData["url"]);
+
+    return bookmarkedNews.isNotEmpty;
+  }
+
+  removeFromBookmark() async {
+    try {
+      final hiveBox = Hive.box("hiveBox");
+      final bookmarkedNews = hiveBox.values
+          .where((news) => news["url"] == widget.newsData["url"])
+          .toList();
+      if (bookmarkedNews.isNotEmpty) {
+        final key = hiveBox
+            .keyAt(hiveBox.values.toList().indexOf(bookmarkedNews.first));
+        await hiveBox.delete(key);
+      }
+      KSnackbar(context, message: "Removed from bookmark");
+    } catch (e) {
+      KSnackbar(context, message: "$e", error: true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return KScaffold(
@@ -57,14 +95,23 @@ class _News_UIState extends State<News_UI> {
                         size: 20,
                       )),
                   IconButton.outlined(
-                    onPressed: () {},
+                    onPressed: () async {
+                      if (isBookmarked()) {
+                        await removeFromBookmark();
+                      } else {
+                        await addToBookmark();
+                      }
+                      setState(() {});
+                    },
                     style: IconButton.styleFrom(
                       side: BorderSide(
                         color: Kolor.border,
                       ),
                     ),
                     icon: SvgPicture.asset(
-                      "$kIconPath/navigation/bookmark.svg",
+                      isBookmarked()
+                          ? "$kIconPath/navigation/bookmark-filled.svg"
+                          : "$kIconPath/navigation/bookmark.svg",
                       height: 17,
                     ),
                   )

@@ -74,11 +74,10 @@ class KScaffold extends StatelessWidget {
                                 spacing: 20,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  SvgPicture.asset(
-                                    "$kIconPath/no-internet.svg",
-                                    height: 20,
-                                    colorFilter:
-                                        kSvgColor(StatusText.danger.darken()),
+                                  Icon(
+                                    Icons
+                                        .signal_cellular_connected_no_internet_0_bar_sharp,
+                                    color: StatusText.danger,
                                   ),
                                   Label("No Internet!",
                                           color: StatusText.danger.darken(),
@@ -117,35 +116,21 @@ class KScaffold extends StatelessWidget {
                     spacing: 30,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // SizedBox(
-                      //   height: 25,
-                      //   width: 25,
-                      //   child: CircularProgressIndicator(
-                      //     strokeWidth: 3,
-                      //     backgroundColor: kOpacity(KColor.scaffold, .1),
-                      //     color: Colors.black,
-                      //   ),
-                      // ),
-                      // Label(
-                      //   "Please Wait",
-                      //   fontSize: 17,
-                      //   weight: 550,
-                      //   color: Colors.black,
-                      // ).title,
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          SizedBox(
-                            height: 70,
-                            width: 70,
-                            child: CircularProgressIndicator(),
-                          ),
-                          SvgPicture.asset(
-                            "$kIconPath/loading-panda.svg",
-                            height: 50,
-                          ),
-                        ],
+                      SizedBox(
+                        height: 25,
+                        width: 25,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3,
+                          backgroundColor: kOpacity(Kolor.scaffold, .1),
+                          color: Colors.black,
+                        ),
                       ),
+                      Label(
+                        "Please Wait",
+                        fontSize: 17,
+                        weight: 550,
+                        color: Colors.black,
+                      ).title,
                     ],
                   ),
                 ),
