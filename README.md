@@ -16,21 +16,18 @@ The project is organized into the following directories and files:
 
 ### Components
 
-- **Day_Picker.dart**: A widget for selecting days.
+
 - **KNavigationBar.dart**: A custom navigation bar widget.
 - **KScaffold.dart**: A custom scaffold widget with additional features.
 - **KSearchbar.dart**: A custom search bar widget.
 - **kButton.dart**: A custom button widget.
 - **kCard.dart**: A custom card widget.
-- **kCarousel.dart**: A custom carousel widget.
-- **kTextfield.dart**: A custom text field widget.
 - **kWidgets.dart**: A collection of custom widgets.
 - **Label.dart**: A custom label widget.
 
 ### Helper
 
 - **api_config.dart**: Configuration for API endpoints.
-- **appLink.dart**: Application link configurations.
 - **data.dart**: Data handling utilities.
 - **hive_init.dart**: Initialization for Hive database.
 - **router_config.dart**: Configuration for application routing.
@@ -57,10 +54,3 @@ The project is organized into the following directories and files:
 - **commons.dart**: Common utility functions.
 - **constants.dart**: Constant values used throughout the application.
 - **theme.dart**: Theme settings for the application.
-
-## Getting Started
-
-### Prerequisites
-
-- Flutter SDK
-- Dart SDK
